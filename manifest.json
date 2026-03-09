@@ -1,0 +1,16 @@
+{
+  "name": "Critterpedia Tracker",
+  "short_name": "Critterpedia",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f0e6cf",
+  "theme_color": "#dec395",
+  "icons": [
+    {
+      "src": "critterpedia_app.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
