@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Critterpedia Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" onerror="" />
+  <style>
+    :root {
+      --sand: #dec395;
+      --sand-light: #eedcbb;
+      --sand-pale: #f5edd8;
+      --sand-dark: #c9a96e;
+      --sand-deep: #b08d4a;
+      --cream: #faf5ea;
+      --cream-dark: #f0e6cf;
+      --brown: #6b5639;
+      --brown-light: #a8906e;
+      --ivory: #fefcf5;
+      --warm-white: #fff9ef;
+      --sage: #c5d4a7;
+      --sage-dark: #9ab87a;
+      --blush: #f5e0d0;
+      --sky: #d4e4c8;
+      --sky-dark: #a8c48e;
+      --caught-gold: #f0e4c0;
+      --bg: #f0e6cf;
+      --card-shadow: 0 4px 15px rgba(222, 195, 149, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Nunito', 'Segoe UI', Tahoma, sans-serif;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(222,195,149,0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(197,212,167,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(245,224,208,0.1) 0%, transparent 50%);
+      color: #5a4a3a;
+      min-height: 100vh;
+    }
+
+    /* Leaf pattern background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M15 5 Q20 15 15 25 Q10 15 15 5Z' fill='%23c5d4a7' opacity='0.08'/%3E%3Cpath d='M45 35 Q50 45 45 55 Q40 45 45 35Z' fill='%23dec395' opacity='0.06'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      padding: 30px 20px 20px;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: var(--sand-deep);
+      text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
+      letter-spacing: 1px;
+      position: relative;
+      display: inline-block;
+    }
+
+    header h1::before {
+      content: '🍃';
+      position: absolute;
+      left: -45px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-30deg);
+      font-size: 1.8rem;
+    }
+
+    header h1::after {
+      content: '🍃';
+      position: absolute;
+      right: -45px;
+      top: 50%;
+      transform: translateY(-50%) rotate(30deg) scaleX(-1);
+      font-size: 1.8rem;
+    }
+
+    .subtitle {
+      color: var(--brown-light);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+
+    /* ── Stats Bar ── */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      background: var(--cream);
+      border: 2px solid var(--cream-dark);
+      border-radius: 50px;
+      padding: 8px 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--brown);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .stat-pill span {
+      color: var(--sand-deep);
+    }
+
+    /* ── Tab Navigation ── */
+    .tab-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      border: none;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn.all { background: var(--cream-dark); color: var(--brown); }
+    .tab-btn.fish { background: var(--sky); color: #6a8a50; }
+    .tab-btn.bugs { background: var(--sand-pale); color: var(--sand-deep); }
+    .tab-btn.sea { background: var(--blush); color: #a07a5a; }
+
+    .tab-btn.active.all { background: var(--brown-light); color: white; box-shadow: 0 4px 15px rgba(168,144,110,0.4); }
+    .tab-btn.active.fish { background: var(--sage-dark); color: white; box-shadow: 0 4px 15px rgba(154,184,122,0.4); }
+    .tab-btn.active.bugs { background: var(--sand-dark); color: white; box-shadow: 0 4px 15px rgba(222,195,149,0.4); }
+    .tab-btn.active.sea { background: var(--brown-light); color: white; box-shadow: 0 4px 15px rgba(168,144,110,0.4); }
+
+    .tab-btn:hover { transform: translateY(-2px); }
+
+    .tab-icon { font-size: 1.2rem; }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      max-width: 350px;
+      padding: 10px 18px;
+      border: 2px solid var(--cream-dark);
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      background: var(--cream);
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .search-box:focus {
+      border-color: var(--sand);
+    }
+
+    .filter-btn {
+      padding: 10px 18px;
+      border: 2px solid var(--cream-dark);
+      border-radius: 50px;
+      background: var(--cream);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: var(--brown);
+    }
+
+    .filter-btn:hover, .filter-btn.has-filter {
+      background: var(--sand);
+      color: var(--brown);
+      border-color: var(--sand-dark);
+    }
+
+    /* ── Filter popup ── */
+    .filter-menu-wrap {
+      position: relative;
+    }
+
+    .filter-popup {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--cream);
+      border: 2px solid var(--cream-dark);
+      border-radius: 16px;
+      padding: 8px;
+      min-width: 240px;
+      box-shadow: 0 8px 30px rgba(107,86,57,0.15);
+      z-index: 50;
+      animation: popIn 0.2s ease;
+    }
+
+    .filter-popup.show {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-popup-btn {
+      border: none;
+      background: transparent;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--brown);
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.2s;
+    }
+
+    .filter-popup-btn:hover {
+      background: var(--sand-pale);
+    }
+
+    .filter-popup-btn.active-filter {
+      background: var(--sand-light);
+      font-weight: 700;
+    }
+
+    .filter-popup-btn.reset {
+      color: var(--brown-light);
+    }
+
+    .filter-popup-btn.reset:hover {
+      background: var(--blush);
+      color: var(--brown);
+    }
+
+    .filter-popup-divider {
+      height: 1px;
+      background: var(--cream-dark);
+      margin: 4px 6px;
+    }
+
+    /* ── Critter Grid ── */
+    .critter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+      padding-bottom: 40px;
+    }
+
+    .critter-card {
+      background: var(--cream);
+      border: 2px solid var(--cream-dark);
+      border-radius: 16px;
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      box-shadow: var(--card-shadow);
+      user-select: none;
+    }
+
+    .critter-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(222, 195, 149, 0.3);
+    }
+
+    .critter-card.caught {
+      background: linear-gradient(135deg, var(--caught-gold), var(--sand-pale));
+      border-color: var(--sand);
+    }
+
+    .critter-emoji {
+      font-size: 2.5rem;
+      margin-bottom: 6px;
+      display: block;
+      transition: transform 0.3s;
+    }
+
+    .critter-img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      margin-bottom: 6px;
+      transition: transform 0.3s;
+      image-rendering: auto;
+    }
+
+    .critter-card:hover .critter-emoji,
+    .critter-card:hover .critter-img {
+      transform: scale(1.15) rotate(-5deg);
+    }
+
+    .critter-name {
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--brown);
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .critter-price {
+      font-size: 0.72rem;
+      color: var(--brown-light);
+      font-weight: 600;
+    }
+
+    .critter-price::before {
+      content: '💰 ';
+      font-size: 0.65rem;
+    }
+
+    .critter-rarity {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 50px;
+      display: inline-block;
+      margin-top: 3px;
+    }
+
+    .rarity-common { background: var(--cream-dark); color: var(--brown-light); }
+    .rarity-uncommon { background: #d4e8d0; color: #4a7a42; }
+    .rarity-rare { background: #d0dff0; color: #3a6a9a; }
+    .rarity-ultrarare { background: #f0ddf5; color: #8a3aa0; }
+
+    .status-badges {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .badge {
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 50px;
+      font-weight: 700;
+    }
+
+    .badge.caught-badge {
+      background: var(--sand-light);
+      color: var(--brown);
+    }
+
+    .critter-card .check-mark {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2.5px solid var(--cream-dark);
+      background: var(--ivory);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      transition: all 0.25s;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .critter-card .check-mark:hover {
+      border-color: var(--sand);
+      background: var(--sand-pale);
+      transform: scale(1.15);
+    }
+
+    .critter-card.caught .check-mark {
+      background: var(--sand-dark);
+      border-color: var(--sand-dark);
+      color: white;
+    }
+
+    .critter-card.caught .check-mark:hover {
+      background: var(--brown-light);
+      border-color: var(--brown-light);
+      transform: scale(1.15);
+    }
+
+    /* ── Tooltip / Detail Popup ── */
+    .detail-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(107, 86, 57, 0.3);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .detail-overlay.show {
+      display: flex;
+    }
+
+    .detail-card {
+      background: var(--cream);
+      border: 3px solid var(--sand);
+      border-radius: 24px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      animation: popIn 0.3s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .detail-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--brown);
+    }
+
+    .detail-emoji {
+      font-size: 4rem;
+      margin-bottom: 10px;
+    }
+
+    .detail-img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .detail-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--brown);
+      margin-bottom: 6px;
+    }
+
+    .detail-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 15px 0;
+      text-align: left;
+    }
+
+    .detail-field {
+      background: var(--warm-white);
+      border-radius: 12px;
+      padding: 8px 12px;
+      border: 1px solid var(--cream-dark);
+    }
+
+    .detail-field label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--brown-light);
+      font-weight: 700;
+    }
+
+    .detail-field p {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--brown);
+      margin-top: 2px;
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      justify-content: center;
+    }
+
+    .detail-btn {
+      padding: 10px 30px;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .detail-btn.catch-btn {
+      background: var(--sand-dark);
+      color: white;
+    }
+
+    .detail-btn.catch-btn:hover {
+      background: var(--sand-deep);
+      transform: translateY(-2px);
+    }
+
+    .detail-btn.catch-btn.active {
+      background: var(--sand-pale);
+      color: var(--brown);
+    }
+
+    /* ── Progress Bar ── */
+    .progress-section {
+      background: var(--cream);
+      border: 2px solid var(--cream-dark);
+      border-radius: 20px;
+      padding: 18px 24px;
+      margin: 15px 0;
+      box-shadow: var(--card-shadow);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .progress-label {
+      font-weight: 700;
+      color: var(--brown);
+      font-size: 0.9rem;
+    }
+
+    .progress-pct {
+      font-weight: 800;
+      color: var(--sand-deep);
+      font-size: 1.1rem;
+    }
+
+    .progress-track {
+      height: 14px;
+      background: var(--cream-dark);
+      border-radius: 50px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 50px;
+      transition: width 0.5s ease;
+      position: relative;
+      background: linear-gradient(90deg, var(--sand-light), var(--sand-dark));
+    }
+
+    .progress-bars {
+      display: flex;
+      gap: 15px;
+    }
+
+    .progress-bar-group {
+      flex: 1;
+    }
+
+    /* ── Empty State ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--brown-light);
+    }
+
+    .empty-state .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    /* ── Availability dots ── */
+    .month-dots {
+      display: flex;
+      gap: 2px;
+      justify-content: center;
+      margin-top: 5px;
+    }
+
+    .month-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cream-dark);
+    }
+
+    .month-dot.available {
+      background: var(--sand-dark);
+    }
+
+    .month-dot.current {
+      outline: 2px solid var(--sage-dark);
+      outline-offset: 1px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.8rem; }
+      header h1::before, header h1::after { display: none; }
+      .critter-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+      .detail-card { padding: 20px; }
+      .detail-info { grid-template-columns: 1fr; }
+      .stats-bar { gap: 8px; }
+      .stat-pill { padding: 6px 14px; font-size: 0.8rem; }
+      .progress-bars { flex-direction: column; gap: 8px; }
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--cream-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--sand-light); border-radius: 50px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--brown-light); }
+
+    /* ── Hemisphere toggle ── */
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .hemi-group {
+      display: flex;
+      gap: 4px;
+    }
+    .hemi-btn {
+      padding: 6px 16px;
+      border: 2px solid var(--cream-dark);
+      border-radius: 50px;
+      background: var(--cream);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: var(--brown);
+      transition: all 0.3s;
+    }
+    .hemi-btn.active {
+      background: var(--sand-light);
+      border-color: var(--sand);
+      color: var(--brown);
+    }
+
+    /* ── Month picker in filter popup ── */
+    .month-picker {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      padding: 4px 6px;
+    }
+    .month-pick-btn {
+      border: none;
+      background: var(--warm-white);
+      border-radius: 8px;
+      padding: 5px 2px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+      font-size: 0.72rem;
+      cursor: pointer;
+      color: var(--brown);
+      transition: all 0.2s;
+    }
+    .month-pick-btn:hover {
+      background: var(--sand-pale);
+    }
+    .month-pick-btn.active-filter {
+      background: var(--sand-light);
+      font-weight: 700;
+    }
+    .month-label {
+      padding: 6px 14px 2px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--brown-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Critterpedia</h1>
+    <p class="subtitle">Animal Crossing: New Horizons Tracker</p>
+  </header>
+
+  <div class="stats-bar" id="statsBar"></div>
+
+  <div class="progress-section">
+    <div class="progress-bars" id="progressBars"></div>
+  </div>
+
+  <div class="tab-nav">
+    <button class="tab-btn all" onclick="switchTab('all')">
+      <span class="tab-icon">🌿</span> All
+    </button>
+    <button class="tab-btn fish active" onclick="switchTab('fish')">
+      <span class="tab-icon">🐟</span> Fish
+    </button>
+    <button class="tab-btn bugs" onclick="switchTab('bugs')">
+      <span class="tab-icon">🦋</span> Bugs
+    </button>
+    <button class="tab-btn sea" onclick="switchTab('sea')">
+      <span class="tab-icon">🐙</span> Sea Creatures
+    </button>
+  </div>
+
+  <div class="controls-row">
+    <div class="hemi-group">
+      <button class="hemi-btn active" id="hemiNorth" onclick="setHemisphere('north')">🌏 Northern</button>
+      <button class="hemi-btn" id="hemiSouth" onclick="setHemisphere('south')">🌍 Southern</button>
+    </div>
+    <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search critters..." oninput="renderGrid()" />
+    <div class="filter-menu-wrap">
+      <button class="filter-btn" id="filterToggleBtn" onclick="toggleFilterMenu()">⚙ Filters</button>
+      <div class="filter-popup" id="filterPopup">
+        <button class="filter-popup-btn" id="fpMonth" onclick="applyQuickFilter('month')">📅 Current Month</button>
+        <button class="filter-popup-btn" id="fpTime" onclick="applyQuickFilter('time')">🕐 Available Right Now</button>
+        <button class="filter-popup-btn" id="fpCaught" onclick="applyQuickFilter('caught')">✓ Caught Only</button>
+        <button class="filter-popup-btn" id="fpUncaught" onclick="applyQuickFilter('uncaught')">✗ Uncaught Only</button>
+        <div class="filter-popup-divider"></div>
+        <div class="month-label">Filter by Month</div>
+        <div class="month-picker">
+          <button class="month-pick-btn" onclick="applyMonthFilter(1)">Jan</button>
+          <button class="month-pick-btn" onclick="applyMonthFilter(2)">Feb</button>
+          <button class="month-pick-btn" onclick="applyMonthFilter(3)">Mar</button>
+          <button class="month-pick-btn" onclick="applyMonthFilter(4)">Apr</button>
+          <button class="month-pick-btn" onclick="applyMonthFilter(5)">May</button>
+          <button class="month-pick-btn" onclick="applyMonthFilter(6)">Jun</button>
+          <button class="month-pick-btn" onclick="applyMonthFilter(7)">Jul</button>
+          <button class="month-pick-btn" onclick="applyMonthFilter(8)">Aug</button>
+          <button class="month-pick-btn" onclick="applyMonthFilter(9)">Sep</button>
+          <button class="month-pick-btn" onclick="applyMonthFilter(10)">Oct</button>
+          <button class="month-pick-btn" onclick="applyMonthFilter(11)">Nov</button>
+          <button class="month-pick-btn" onclick="applyMonthFilter(12)">Dec</button>
+        </div>
+        <div class="filter-popup-divider"></div>
+        <button class="filter-popup-btn reset" onclick="applyQuickFilter('reset')">↺ Reset Filters</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="critter-grid" id="critterGrid"></div>
+</div>
+
+<!-- Detail Overlay -->
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
+  <div class="detail-card" id="detailCard"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  CRITTER DATA
+// ═══════════════════════════════════════════════════
+
+const FISH = [
+  { name:"Bitterling", price:900, location:"River", shadow:"Tiny", time:"All day", months:[1,2,3,11,12], rarity:"Common" },
+  { name:"Pale Chub", price:200, location:"River", shadow:"Tiny", time:"9AM-4PM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Crucian Carp", price:160, location:"River", shadow:"Small", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Dace", price:240, location:"River", shadow:"Medium", time:"4PM-9AM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Carp", price:300, location:"Pond", shadow:"Large", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Koi", price:4000, location:"Pond", shadow:"Large", time:"4PM-9AM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Rare" },
+  { name:"Goldfish", price:1300, location:"Pond", shadow:"Tiny", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Ranchu Goldfish", price:4500, location:"Pond", shadow:"Small", time:"9AM-4PM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Rare" },
+  { name:"Killifish", price:300, location:"Pond", shadow:"Tiny", time:"All day", months:[4,5,6,7,8], rarity:"Common" },
+  { name:"Crawfish", price:200, location:"Pond", shadow:"Small", time:"All day", months:[4,5,6,7,8,9], rarity:"Common" },
+  { name:"Soft-Shelled Turtle", price:3750, location:"River", shadow:"Large", time:"4PM-9AM", months:[8,9], rarity:"Uncommon" },
+  { name:"Snapping Turtle", price:5000, location:"River", shadow:"X-Large", time:"9PM-4AM", months:[4,5,6,7,8,9,10], rarity:"Uncommon" },
+  { name:"Tadpole", price:100, location:"Pond", shadow:"Tiny", time:"All day", months:[3,4,5,6,7], rarity:"Common" },
+  { name:"Frog", price:120, location:"Pond", shadow:"Small", time:"All day", months:[5,6,7,8], rarity:"Common" },
+  { name:"Freshwater Goby", price:400, location:"River", shadow:"Small", time:"4PM-9AM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Loach", price:400, location:"River", shadow:"Small", time:"All day", months:[3,4,5], rarity:"Common" },
+  { name:"Catfish", price:800, location:"Pond", shadow:"Large", time:"4PM-9AM", months:[5,6,7,8,9,10], rarity:"Uncommon" },
+  { name:"Giant Snakehead", price:5500, location:"Pond", shadow:"X-Large", time:"9AM-4PM", months:[6,7,8], rarity:"Rare" },
+  { name:"Bluegill", price:180, location:"River", shadow:"Small", time:"9AM-4PM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Yellow Perch", price:300, location:"River", shadow:"Medium", time:"All day", months:[1,2,3,10,11,12], rarity:"Common" },
+  { name:"Black Bass", price:400, location:"River", shadow:"Large", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Tilapia", price:800, location:"River", shadow:"Medium", time:"All day", months:[6,7,8,9,10], rarity:"Uncommon" },
+  { name:"Pike", price:1800, location:"River", shadow:"X-Large", time:"All day", months:[9,10,11,12], rarity:"Uncommon" },
+  { name:"Pond Smelt", price:500, location:"River", shadow:"Small", time:"All day", months:[1,2,12], rarity:"Common" },
+  { name:"Sweetfish", price:900, location:"River", shadow:"Medium", time:"All day", months:[7,8,9], rarity:"Common" },
+  { name:"Cherry Salmon", price:1000, location:"River (Clifftop)", shadow:"Medium", time:"4PM-9AM", months:[3,4,5,6,9,10,11], rarity:"Uncommon" },
+  { name:"Char", price:3800, location:"River (Clifftop)", shadow:"Medium", time:"4PM-9AM", months:[3,4,5,6,9,10,11], rarity:"Uncommon" },
+  { name:"Golden Trout", price:15000, location:"River (Clifftop)", shadow:"Medium", time:"4PM-9AM", months:[3,4,5,9,10,11], rarity:"Ultra-rare" },
+  { name:"Stringfish", price:15000, location:"River (Clifftop)", shadow:"X-Large", time:"4PM-9AM", months:[1,2,3,12], rarity:"Ultra-rare" },
+  { name:"Salmon", price:700, location:"River (Mouth)", shadow:"Large", time:"All day", months:[9], rarity:"Common" },
+  { name:"King Salmon", price:1800, location:"River (Mouth)", shadow:"X-Large", time:"All day", months:[9], rarity:"Rare" },
+  { name:"Mitten Crab", price:2000, location:"River", shadow:"Small", time:"4PM-9AM", months:[9,10,11], rarity:"Uncommon" },
+  { name:"Guppy", price:1300, location:"River", shadow:"Tiny", time:"9AM-4PM", months:[4,5,6,7,8,9,10,11], rarity:"Uncommon" },
+  { name:"Nibble Fish", price:1500, location:"River", shadow:"Tiny", time:"9AM-4PM", months:[5,6,7,8,9], rarity:"Uncommon" },
+  { name:"Angelfish", price:3000, location:"River", shadow:"Small", time:"4PM-9AM", months:[5,6,7,8,9,10], rarity:"Uncommon" },
+  { name:"Betta", price:2500, location:"River", shadow:"Small", time:"9AM-4PM", months:[5,6,7,8,9,10], rarity:"Uncommon" },
+  { name:"Neon Tetra", price:500, location:"River", shadow:"Tiny", time:"9AM-4PM", months:[4,5,6,7,8,9,10,11], rarity:"Common" },
+  { name:"Rainbowfish", price:800, location:"River", shadow:"Tiny", time:"9AM-4PM", months:[5,6,7,8,9,10], rarity:"Common" },
+  { name:"Piranha", price:2500, location:"River", shadow:"Small", time:"9AM-4PM & 9PM-4AM", months:[6,7,8,9], rarity:"Uncommon" },
+  { name:"Arowana", price:10000, location:"River", shadow:"Large", time:"4PM-9AM", months:[6,7,8,9], rarity:"Rare" },
+  { name:"Dorado", price:15000, location:"River", shadow:"X-Large", time:"4AM-9PM", months:[6,7,8,9], rarity:"Ultra-rare" },
+  { name:"Gar", price:6000, location:"Pond", shadow:"X-Large", time:"4PM-9AM", months:[6,7,8,9], rarity:"Rare" },
+  { name:"Arapaima", price:10000, location:"River", shadow:"XX-Large", time:"4PM-9AM", months:[6,7,8,9], rarity:"Rare" },
+  { name:"Saddled Bichir", price:4000, location:"River", shadow:"Large", time:"9PM-4AM", months:[6,7,8,9], rarity:"Rare" },
+  { name:"Sturgeon", price:10000, location:"River (Mouth)", shadow:"XX-Large", time:"All day", months:[1,2,3,9,10,11,12], rarity:"Rare" },
+  { name:"Sea Butterfly", price:1000, location:"Sea", shadow:"Tiny", time:"All day", months:[1,2,3,12], rarity:"Uncommon" },
+  { name:"Seahorse", price:1100, location:"Sea", shadow:"Tiny", time:"All day", months:[4,5,6,7,8,9,10,11], rarity:"Common" },
+  { name:"Clown Fish", price:650, location:"Sea", shadow:"Tiny", time:"All day", months:[4,5,6,7,8,9], rarity:"Common" },
+  { name:"Surgeonfish", price:1000, location:"Sea", shadow:"Small", time:"All day", months:[4,5,6,7,8,9], rarity:"Common" },
+  { name:"Butterfly Fish", price:1000, location:"Sea", shadow:"Small", time:"All day", months:[4,5,6,7,8,9], rarity:"Common" },
+  { name:"Napoleonfish", price:10000, location:"Sea", shadow:"XX-Large", time:"4AM-9PM", months:[7,8], rarity:"Ultra-rare" },
+  { name:"Zebra Turkeyfish", price:500, location:"Sea", shadow:"Medium", time:"All day", months:[4,5,6,7,8,9,10,11], rarity:"Common" },
+  { name:"Blowfish", price:5000, location:"Sea", shadow:"Medium", time:"9PM-4AM", months:[1,2,11,12], rarity:"Uncommon" },
+  { name:"Puffer Fish", price:250, location:"Sea", shadow:"Medium", time:"All day", months:[7,8,9], rarity:"Common" },
+  { name:"Anchovy", price:200, location:"Sea", shadow:"Small", time:"4AM-9PM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Horse Mackerel", price:150, location:"Sea", shadow:"Small", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Barred Knifejaw", price:5000, location:"Sea", shadow:"Medium", time:"All day", months:[3,4,5,6,7,8,9,10,11], rarity:"Uncommon" },
+  { name:"Sea Bass", price:400, location:"Sea", shadow:"X-Large", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Red Snapper", price:3000, location:"Sea", shadow:"Large", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Uncommon" },
+  { name:"Dab", price:300, location:"Sea", shadow:"Medium", time:"All day", months:[1,2,3,4,10,11,12], rarity:"Common" },
+  { name:"Olive Flounder", price:800, location:"Sea", shadow:"X-Large", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Squid", price:500, location:"Sea", shadow:"Medium", time:"All day", months:[1,2,3,4,5,6,7,8,12], rarity:"Common" },
+  { name:"Moray Eel", price:2000, location:"Sea", shadow:"Long", time:"All day", months:[8,9,10], rarity:"Uncommon" },
+  { name:"Ribbon Eel", price:600, location:"Sea", shadow:"Long", time:"All day", months:[6,7,8,9,10], rarity:"Uncommon" },
+  { name:"Tuna", price:7000, location:"Pier", shadow:"XX-Large", time:"All day", months:[1,2,3,4,11,12], rarity:"Rare" },
+  { name:"Blue Marlin", price:10000, location:"Pier", shadow:"XX-Large", time:"All day", months:[1,2,3,4,7,8,9,11,12], rarity:"Rare" },
+  { name:"Giant Trevally", price:4500, location:"Pier", shadow:"X-Large", time:"All day", months:[5,6,7,8,9,10], rarity:"Rare" },
+  { name:"Mahi-Mahi", price:6000, location:"Pier", shadow:"X-Large", time:"All day", months:[5,6,7,8,9,10], rarity:"Rare" },
+  { name:"Ocean Sunfish", price:4000, location:"Sea", shadow:"Fin", time:"4AM-9PM", months:[7,8,9], rarity:"Rare" },
+  { name:"Ray", price:3000, location:"Sea", shadow:"X-Large", time:"4AM-9PM", months:[8,9,10,11], rarity:"Uncommon" },
+  { name:"Saw Shark", price:12000, location:"Sea", shadow:"Fin", time:"4PM-9AM", months:[6,7,8,9], rarity:"Rare" },
+  { name:"Hammerhead Shark", price:8000, location:"Sea", shadow:"Fin", time:"4PM-9AM", months:[6,7,8,9], rarity:"Rare" },
+  { name:"Great White Shark", price:15000, location:"Sea", shadow:"Fin", time:"4PM-9AM", months:[6,7,8,9], rarity:"Ultra-rare" },
+  { name:"Whale Shark", price:13000, location:"Sea", shadow:"Fin", time:"All day", months:[6,7,8,9], rarity:"Ultra-rare" },
+  { name:"Suckerfish", price:1500, location:"Sea", shadow:"Fin", time:"All day", months:[6,7,8,9], rarity:"Uncommon" },
+  { name:"Football Fish", price:2500, location:"Sea", shadow:"Large", time:"4PM-9AM", months:[1,2,3,11,12], rarity:"Uncommon" },
+  { name:"Oarfish", price:9000, location:"Sea", shadow:"XX-Large", time:"All day", months:[1,2,3,4,5,12], rarity:"Rare" },
+  { name:"Barreleye", price:15000, location:"Sea", shadow:"Small", time:"9PM-4AM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Ultra-rare" },
+  { name:"Coelacanth", price:15000, location:"Sea (Rain)", shadow:"XX-Large", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Ultra-rare" },
+];
+
+const BUGS = [
+  { name:"Common Butterfly", price:160, location:"Flying", time:"4AM-7PM", months:[1,2,3,4,5,6,9,10,11,12], rarity:"Common" },
+  { name:"Yellow Butterfly", price:160, location:"Flying", time:"4AM-7PM", months:[3,4,5,6,9,10], rarity:"Common" },
+  { name:"Tiger Butterfly", price:240, location:"Flying", time:"4AM-7PM", months:[3,4,5,6,7,8,9], rarity:"Common" },
+  { name:"Peacock Butterfly", price:2500, location:"Flying (Hybrid Flowers)", time:"4AM-7PM", months:[3,4,5,6], rarity:"Uncommon" },
+  { name:"Common Bluebottle", price:300, location:"Flying", time:"4AM-7PM", months:[4,5,6,7,8], rarity:"Common" },
+  { name:"Paper Kite Butterfly", price:1000, location:"Flying", time:"8AM-7PM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Great Purple Emperor", price:3000, location:"Flying", time:"4AM-7PM", months:[5,6,7,8], rarity:"Uncommon" },
+  { name:"Monarch Butterfly", price:140, location:"Flying", time:"4AM-5PM", months:[9,10,11], rarity:"Common" },
+  { name:"Emperor Butterfly", price:4000, location:"Flying", time:"5PM-8AM", months:[1,2,3,6,7,8,9,12], rarity:"Uncommon" },
+  { name:"Agrias Butterfly", price:3000, location:"Flying", time:"8AM-5PM", months:[4,5,6,7,8,9], rarity:"Uncommon" },
+  { name:"Rajah Brooke's Birdwing", price:2500, location:"Flying", time:"8AM-5PM", months:[1,2,4,5,6,7,8,9,12], rarity:"Uncommon" },
+  { name:"Queen Alexandra's Birdwing", price:4000, location:"Flying", time:"8AM-4PM", months:[5,6,7,8,9], rarity:"Rare" },
+  { name:"Moth", price:130, location:"Flying (Light)", time:"7PM-4AM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Atlas Moth", price:3000, location:"On Trees", time:"7PM-4AM", months:[4,5,6,7,8,9], rarity:"Uncommon" },
+  { name:"Madagascan Sunset Moth", price:2500, location:"Flying", time:"8AM-4PM", months:[4,5,6,7,8,9], rarity:"Uncommon" },
+  { name:"Long Locust", price:200, location:"Ground", time:"8AM-7PM", months:[4,5,6,7,8,9,10,11], rarity:"Common" },
+  { name:"Migratory Locust", price:600, location:"Ground", time:"8AM-7PM", months:[8,9,10,11], rarity:"Uncommon" },
+  { name:"Rice Grasshopper", price:160, location:"Ground", time:"8AM-7PM", months:[8,9,10,11], rarity:"Common" },
+  { name:"Grasshopper", price:160, location:"Ground", time:"8AM-5PM", months:[7,8,9], rarity:"Common" },
+  { name:"Cricket", price:130, location:"Ground", time:"5PM-8AM", months:[9,10,11], rarity:"Common" },
+  { name:"Bell Cricket", price:430, location:"Ground", time:"5PM-8AM", months:[9,10], rarity:"Common" },
+  { name:"Mantis", price:430, location:"On Flowers", time:"8AM-5PM", months:[3,4,5,6,7,8,9,10,11], rarity:"Common" },
+  { name:"Orchid Mantis", price:2400, location:"On Flowers (White)", time:"8AM-5PM", months:[3,4,5,6,7,8,9,10,11], rarity:"Uncommon" },
+  { name:"Honeybee", price:200, location:"Flying", time:"8AM-5PM", months:[3,4,5,6,7], rarity:"Common" },
+  { name:"Wasp", price:2500, location:"Shaking Trees", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Brown Cicada", price:250, location:"On Trees", time:"8AM-5PM", months:[7,8], rarity:"Common" },
+  { name:"Robust Cicada", price:300, location:"On Trees", time:"8AM-5PM", months:[7,8], rarity:"Common" },
+  { name:"Giant Cicada", price:500, location:"On Trees", time:"8AM-5PM", months:[7,8], rarity:"Common" },
+  { name:"Walker Cicada", price:400, location:"On Trees", time:"8AM-4PM", months:[8,9], rarity:"Common" },
+  { name:"Evening Cicada", price:550, location:"On Trees", time:"4AM-8AM & 4PM-7PM", months:[7,8], rarity:"Common" },
+  { name:"Cicada Shell", price:10, location:"On Trees", time:"All day", months:[7,8], rarity:"Common" },
+  { name:"Red Dragonfly", price:180, location:"Flying", time:"8AM-7PM", months:[9,10], rarity:"Common" },
+  { name:"Darner Dragonfly", price:230, location:"Flying", time:"8AM-5PM", months:[4,5,6,7,8,9,10], rarity:"Common" },
+  { name:"Banded Dragonfly", price:4500, location:"Flying", time:"8AM-5PM", months:[5,6,7,8,9,10], rarity:"Uncommon" },
+  { name:"Damselfly", price:500, location:"Flying", time:"All day", months:[1,2,11,12], rarity:"Common" },
+  { name:"Firefly", price:300, location:"Flying (Near Water)", time:"7PM-4AM", months:[6], rarity:"Common" },
+  { name:"Mole Cricket", price:500, location:"Underground", time:"All day", months:[1,2,3,4,5,11,12], rarity:"Common" },
+  { name:"Pondskater", price:130, location:"On Ponds/Rivers", time:"8AM-7PM", months:[5,6,7,8,9], rarity:"Common" },
+  { name:"Diving Beetle", price:800, location:"On Ponds/Rivers", time:"8AM-7PM", months:[5,6,7,8,9], rarity:"Common" },
+  { name:"Giant Water Bug", price:2000, location:"On Ponds/Rivers", time:"7PM-8AM", months:[4,5,6,7,8,9], rarity:"Uncommon" },
+  { name:"Stinkbug", price:120, location:"On Flowers", time:"All day", months:[3,4,5,6,7,8,9,10], rarity:"Common" },
+  { name:"Man-Faced Stink Bug", price:1000, location:"On Flowers", time:"7PM-8AM", months:[3,4,5,6,7,8,9,10], rarity:"Common" },
+  { name:"Ladybug", price:200, location:"On Flowers", time:"8AM-5PM", months:[3,4,5,6,10], rarity:"Common" },
+  { name:"Tiger Beetle", price:1500, location:"Ground", time:"All day", months:[2,3,4,5,6,7,8,9,10], rarity:"Common" },
+  { name:"Jewel Beetle", price:2400, location:"On Tree Stumps", time:"All day", months:[4,5,6,7,8], rarity:"Uncommon" },
+  { name:"Citrus Long-Horned Beetle", price:350, location:"On Tree Stumps", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Rosalia Batesi Beetle", price:3000, location:"On Tree Stumps", time:"All day", months:[5,6,7,8,9], rarity:"Uncommon" },
+  { name:"Blue Weevil Beetle", price:800, location:"On Trees (Coconut)", time:"All day", months:[7,8], rarity:"Common" },
+  { name:"Violin Beetle", price:450, location:"On Tree Stumps", time:"All day", months:[5,6,9,10,11], rarity:"Common" },
+  { name:"Drone Beetle", price:200, location:"On Trees", time:"All day", months:[6,7,8], rarity:"Common" },
+  { name:"Goliath Beetle", price:8000, location:"On Trees (Coconut)", time:"5PM-8AM", months:[6,7,8,9], rarity:"Rare" },
+  { name:"Saw Stag", price:2000, location:"On Trees", time:"All day", months:[7,8], rarity:"Uncommon" },
+  { name:"Miyama Stag", price:1000, location:"On Trees", time:"All day", months:[7,8], rarity:"Common" },
+  { name:"Giant Stag", price:10000, location:"On Trees", time:"11PM-8AM", months:[7,8], rarity:"Rare" },
+  { name:"Rainbow Stag", price:6000, location:"On Trees", time:"7PM-8AM", months:[6,7,8,9], rarity:"Rare" },
+  { name:"Cyclommatus Stag", price:8000, location:"On Trees (Coconut)", time:"5PM-8AM", months:[7,8], rarity:"Rare" },
+  { name:"Golden Stag", price:12000, location:"On Trees (Coconut)", time:"5PM-8AM", months:[7,8], rarity:"Ultra-rare" },
+  { name:"Giraffe Stag", price:12000, location:"On Trees (Coconut)", time:"5PM-8AM", months:[7,8], rarity:"Ultra-rare" },
+  { name:"Horned Dynastid", price:1350, location:"On Trees", time:"5PM-8AM", months:[7,8], rarity:"Common" },
+  { name:"Horned Atlas", price:8000, location:"On Trees (Coconut)", time:"5PM-8AM", months:[7,8], rarity:"Rare" },
+  { name:"Horned Elephant", price:8000, location:"On Trees (Coconut)", time:"5PM-8AM", months:[7,8], rarity:"Rare" },
+  { name:"Horned Hercules", price:12000, location:"On Trees (Coconut)", time:"5PM-8AM", months:[7,8], rarity:"Ultra-rare" },
+  { name:"Walking Stick", price:600, location:"On Trees", time:"4AM-8AM & 5PM-7PM", months:[7,8,9,10,11], rarity:"Common" },
+  { name:"Walking Leaf", price:600, location:"Under Trees", time:"All day", months:[7,8,9], rarity:"Uncommon" },
+  { name:"Bagworm", price:600, location:"Shaking Trees", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Ant", price:80, location:"Rotten Turnips", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Hermit Crab", price:1000, location:"Beach", time:"7PM-8AM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Wharf Roach", price:200, location:"On Beach Rocks", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Fly", price:60, location:"On Trash/Turnips", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Mosquito", price:130, location:"Flying", time:"5PM-4AM", months:[6,7,8,9], rarity:"Common" },
+  { name:"Flea", price:70, location:"On Villagers", time:"All day", months:[4,5,6,7,8,9,10,11], rarity:"Common" },
+  { name:"Snail", price:250, location:"On Rocks (Rain)", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Pill Bug", price:250, location:"Under Rocks", time:"11PM-4PM", months:[1,2,3,4,5,6,9,10,11,12], rarity:"Common" },
+  { name:"Centipede", price:300, location:"Under Rocks", time:"5PM-11PM", months:[1,2,3,4,5,6,9,10,11,12], rarity:"Common" },
+  { name:"Spider", price:600, location:"Shaking Trees", time:"7PM-8AM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Tarantula", price:8000, location:"Ground", time:"7PM-4AM", months:[1,2,3,4,11,12], rarity:"Rare" },
+  { name:"Scorpion", price:8000, location:"Ground", time:"7PM-4AM", months:[5,6,7,8,9,10], rarity:"Rare" },
+  { name:"Dung Beetle", price:3000, location:"On Snowballs", time:"All day", months:[1,2,12], rarity:"Uncommon" },
+  { name:"Earth-Boring Dung Beetle", price:300, location:"Ground", time:"All day", months:[7,8,9], rarity:"Common" },
+  { name:"Scarab Beetle", price:10000, location:"On Trees", time:"11PM-8AM", months:[7,8], rarity:"Rare" },
+];
+
+const SEA_CREATURES = [
+  { name:"Seaweed", emoji:"🌿", price:600, shadow:"Large", speed:"Stationary", time:"All day", months:[1,2,3,4,5,6,7,10,11,12], rarity:"Common" },
+  { name:"Sea Grapes", emoji:"🍇", price:900, shadow:"Small", speed:"Stationary", time:"All day", months:[6,7,8,9], rarity:"Common" },
+  { name:"Sea Cucumber", emoji:"🥒", price:500, shadow:"Medium", speed:"Very Slow", time:"All day", months:[1,2,3,4,11,12], rarity:"Common" },
+  { name:"Sea Pig", emoji:"🐷", price:10000, shadow:"Small", speed:"Very Fast", time:"4PM-9AM", months:[1,2,11,12], rarity:"Ultra-rare" },
+  { name:"Sea Star", emoji:"⭐", price:500, shadow:"Small", speed:"Very Slow", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Sea Urchin", emoji:"🌰", price:1700, shadow:"Small", speed:"Slow", time:"All day", months:[5,6,7,8,9], rarity:"Common" },
+  { name:"Slate Pencil Urchin", emoji:"✏️", price:2000, shadow:"Medium", speed:"Medium", time:"4PM-9AM", months:[5,6,7,8,9], rarity:"Uncommon" },
+  { name:"Sea Anemone", emoji:"🌺", price:500, shadow:"Large", speed:"Stationary", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Moon Jellyfish", emoji:"🪼", price:600, shadow:"Small", speed:"Very Slow", time:"All day", months:[7,8,9], rarity:"Common" },
+  { name:"Sea Slug", emoji:"🐌", price:600, shadow:"Tiny", speed:"Very Slow", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Pearl Oyster", emoji:"🦪", price:2800, shadow:"Small", speed:"Medium", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Uncommon" },
+  { name:"Mussel", emoji:"🦪", price:1500, shadow:"Small", speed:"Slow", time:"All day", months:[6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Oyster", emoji:"🦪", price:1100, shadow:"Small", speed:"Very Slow", time:"All day", months:[1,2,9,10,11,12], rarity:"Common" },
+  { name:"Scallop", emoji:"🐚", price:1200, shadow:"Medium", speed:"Slow", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Whelk", emoji:"🐚", price:1000, shadow:"Small", speed:"Slow", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Turban Shell", emoji:"🐚", price:1000, shadow:"Small", speed:"Slow", time:"All day", months:[3,4,5,9,10,11,12], rarity:"Common" },
+  { name:"Abalone", emoji:"🐚", price:2000, shadow:"Medium", speed:"Medium", time:"4PM-9AM", months:[1,6,7,8,9,10,11,12], rarity:"Uncommon" },
+  { name:"Gigas Giant Clam", emoji:"🦪", price:15000, shadow:"X-Large", speed:"Very Fast", time:"All day", months:[5,6,7,8,9], rarity:"Ultra-rare" },
+  { name:"Chambered Nautilus", emoji:"🐚", price:1800, shadow:"Medium", speed:"Slow", time:"4PM-9AM", months:[3,4,5,6,9,10,11], rarity:"Uncommon" },
+  { name:"Octopus", emoji:"🐙", price:1200, shadow:"Medium", speed:"Medium", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Umbrella Octopus", emoji:"☂️", price:6000, shadow:"Small", speed:"Fast", time:"All day", months:[3,4,5,9,10,11], rarity:"Rare" },
+  { name:"Vampire Squid", emoji:"🧛", price:10000, shadow:"Medium", speed:"Very Fast", time:"4PM-9AM", months:[5,6,7,8], rarity:"Rare" },
+  { name:"Firefly Squid", emoji:"✨", price:1400, shadow:"Tiny", speed:"Slow", time:"9PM-4AM", months:[3,4,5,6], rarity:"Uncommon" },
+  { name:"Gazami Crab", emoji:"🦀", price:2200, shadow:"Medium", speed:"Medium", time:"All day", months:[6,7,8,9,10,11], rarity:"Common" },
+  { name:"Dungeness Crab", emoji:"🦀", price:1900, shadow:"Medium", speed:"Medium", time:"All day", months:[1,2,3,4,5,11,12], rarity:"Common" },
+  { name:"Snow Crab", emoji:"🦀", price:6000, shadow:"Large", speed:"Fast", time:"All day", months:[1,2,3,4,11,12], rarity:"Rare" },
+  { name:"Red King Crab", emoji:"🦀", price:8000, shadow:"Large", speed:"Fast", time:"All day", months:[1,2,3,11,12], rarity:"Rare" },
+  { name:"Acorn Barnacle", emoji:"🌰", price:600, shadow:"Tiny", speed:"Stationary", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common" },
+  { name:"Spider Crab", emoji:"🕷️", price:12000, shadow:"X-Large", speed:"Very Fast", time:"All day", months:[3,4], rarity:"Rare" },
+  { name:"Tiger Prawn", emoji:"🦐", price:3000, shadow:"Small", speed:"Medium", time:"4PM-9AM", months:[6,7,8,9], rarity:"Uncommon" },
+  { name:"Sweet Shrimp", emoji:"🦐", price:1400, shadow:"Small", speed:"Slow", time:"4PM-9AM", months:[1,2,9,10,11,12], rarity:"Common" },
+  { name:"Mantis Shrimp", emoji:"🦐", price:2500, shadow:"Small", speed:"Medium", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Uncommon" },
+  { name:"Spiny Lobster", emoji:"🦞", price:5000, shadow:"Large", speed:"Fast", time:"9PM-4AM", months:[9,10,11,12], rarity:"Rare" },
+  { name:"Lobster", emoji:"🦞", price:4500, shadow:"Large", speed:"Fast", time:"All day", months:[1,4,5,6,12], rarity:"Uncommon" },
+  { name:"Giant Isopod", emoji:"🪲", price:12000, shadow:"Medium", speed:"Very Fast", time:"9PM-4AM", months:[7,8,9,10], rarity:"Ultra-rare" },
+  { name:"Horseshoe Crab", emoji:"🦀", price:2500, shadow:"Medium", speed:"Medium", time:"9PM-4AM", months:[7,8,9], rarity:"Uncommon" },
+  { name:"Sea Pineapple", emoji:"🍍", price:1500, shadow:"Small", speed:"Slow", time:"All day", months:[4,5,6,7,8], rarity:"Common" },
+  { name:"Spotted Garden Eel", emoji:"🐍", price:1100, shadow:"Small", speed:"Fast", time:"4AM-9PM", months:[5,6,7,8,9,10], rarity:"Uncommon" },
+  { name:"Flatworm", emoji:"🪱", price:700, shadow:"Tiny", speed:"Very Slow", time:"4PM-9AM", months:[8,9], rarity:"Common" },
+  { name:"Venus' Flower Basket", emoji:"🌼", price:5000, shadow:"Medium", speed:"Fast", time:"All day", months:[1,2,10,11,12], rarity:"Rare" },
+];
+
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+
+// CDN image URL helpers
+function getCritterImage(tab, index) {
+  if (tab === 'fish') return `https://acnhcdn.com/latest/MenuIcon/Fish${index}.png`;
+  if (tab === 'bugs') return `https://acnhcdn.com/latest/MenuIcon/Ins${index}.png`;
+  return null;
+}
+
+function critterImgHTML(tab, index, emoji, size) {
+  const url = getCritterImage(tab, index);
+  const sz = size || 64;
+  if (url) return `<img class="${sz > 64 ? 'detail-img' : 'critter-img'}" src="${url}" alt="" loading="lazy" onerror="this.outerHTML='<span class=\\'critter-emoji\\'>${emoji || '🐾'}</span>'" />`;
+  return `<span class="${sz > 64 ? 'detail-emoji' : 'critter-emoji'}">${emoji || '🐾'}</span>`;
+}
+
+let currentTab = 'fish';
+let currentFilter = 'all';
+let filterMonth = false; // false = off, 'current' = current month, or array of months e.g. [1,3,5]
+let filterTime = false;
+let hemisphere = 'north';
+let caughtData = JSON.parse(localStorage.getItem('ac_caught') || '{}');
+
+function save() {
+  localStorage.setItem('ac_caught', JSON.stringify(caughtData));
+}
+
+function getKey(tab, name) { return `${tab}:${name}`; }
+
+function getCritters() {
+  if (currentTab === 'all') return [
+    ...FISH.map(c => ({...c, _tab: 'fish'})),
+    ...BUGS.map(c => ({...c, _tab: 'bugs'})),
+    ...SEA_CREATURES.map(c => ({...c, _tab: 'sea'}))
+  ];
+  if (currentTab === 'fish') return FISH;
+  if (currentTab === 'bugs') return BUGS;
+  return SEA_CREATURES;
+}
+
+function adjustMonths(months) {
+  if (hemisphere === 'north') return months;
+  return months.map(m => ((m + 5) % 12) + 1);
+}
+
+// ═══════════════════════════════════════════════════
+//  RENDERING
+// ═══════════════════════════════════════════════════
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.tab-btn.${tab}`).classList.add('active');
+  renderGrid();
+  updateStats();
+}
+
+function getTabForCritter(c) {
+  return c._tab || currentTab;
+}
+
+// ── Filter popup ──
+function toggleFilterMenu() {
+  const popup = document.getElementById('filterPopup');
+  popup.classList.toggle('show');
+}
+
+// Close popup when clicking outside
+document.addEventListener('click', (e) => {
+  const wrap = document.querySelector('.filter-menu-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('filterPopup').classList.remove('show');
+  }
+});
+
+function isTimeAvailable(timeStr) {
+  if (timeStr === 'All day') return true;
+  const now = new Date();
+  const h = now.getHours();
+  const parts = timeStr.split(' & ');
+  return parts.some(part => {
+    const m = part.match(/(\d+)(AM|PM)\s*-\s*(\d+)(AM|PM)/);
+    if (!m) return true;
+    let start = parseInt(m[1]) + (m[2]==='PM' && m[1]!=='12' ? 12 : 0);
+    let end = parseInt(m[3]) + (m[4]==='PM' && m[3]!=='12' ? 12 : 0);
+    if (m[1]==='12' && m[2]==='AM') start = 0;
+    if (m[3]==='12' && m[4]==='AM') end = 0;
+    if (start < end) return h >= start && h < end;
+    return h >= start || h < end;
+  });
+}
+
+function applyQuickFilter(type) {
+  if (type === 'reset' || type === 'all') {
+    currentFilter = 'all';
+    filterMonth = false;
+    filterTime = false;
+  } else if (type === 'month') {
+    filterMonth = (filterMonth === 'current') ? false : 'current';
+  } else if (type === 'time') {
+    filterTime = !filterTime;
+  } else if (type === 'caught') {
+    currentFilter = currentFilter === 'caught' ? 'all' : 'caught';
+  } else if (type === 'uncaught') {
+    currentFilter = currentFilter === 'uncaught' ? 'all' : 'uncaught';
+  }
+  updateFilterUI();
+  renderGrid();
+}
+
+function applyMonthFilter(month) {
+  if (Array.isArray(filterMonth)) {
+    if (filterMonth.includes(month)) {
+      filterMonth = filterMonth.filter(m => m !== month);
+      if (filterMonth.length === 0) filterMonth = false;
+    } else {
+      filterMonth = [...filterMonth, month];
+    }
+  } else {
+    // If it was 'current' or false, start fresh array
+    filterMonth = [month];
+  }
+  updateFilterUI();
+  renderGrid();
+}
+
+function updateFilterUI() {
+  const btn = document.getElementById('filterToggleBtn');
+  const hasFilter = filterMonth || filterTime || currentFilter !== 'all';
+  btn.classList.toggle('has-filter', hasFilter);
+  btn.textContent = hasFilter ? '⚙ Filtered' : '⚙ Filters';
+
+  document.getElementById('fpMonth').classList.toggle('active-filter', filterMonth === 'current');
+  document.getElementById('fpTime').classList.toggle('active-filter', filterTime);
+  document.getElementById('fpCaught').classList.toggle('active-filter', currentFilter === 'caught');
+  document.getElementById('fpUncaught').classList.toggle('active-filter', currentFilter === 'uncaught');
+
+  // Month picker buttons
+  const selectedMonths = Array.isArray(filterMonth) ? filterMonth : [];
+  document.querySelectorAll('.month-pick-btn').forEach((btn, i) => {
+    btn.classList.toggle('active-filter', selectedMonths.includes(i + 1));
+  });
+}
+
+function setHemisphere(h) {
+  hemisphere = h;
+  document.getElementById('hemiNorth').classList.toggle('active', h === 'north');
+  document.getElementById('hemiSouth').classList.toggle('active', h === 'south');
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('critterGrid');
+  const search = document.getElementById('searchBox').value.toLowerCase();
+  const critters = getCritters();
+  const currentMonth = new Date().getMonth() + 1;
+
+  let filtered = critters.filter(c => {
+    if (search && !c.name.toLowerCase().includes(search)) return false;
+
+    const tab = getTabForCritter(c);
+    const key = getKey(tab, c.name);
+    const isCaught = caughtData[key];
+
+    if (currentFilter === 'caught' && !isCaught) return false;
+    if (currentFilter === 'uncaught' && isCaught) return false;
+
+    if (filterMonth) {
+      const adjMonths = adjustMonths(c.months);
+      if (filterMonth === 'current') {
+        if (!adjMonths.includes(currentMonth)) return false;
+      } else if (Array.isArray(filterMonth)) {
+        if (!filterMonth.some(m => adjMonths.includes(m))) return false;
+      }
+    }
+
+    if (filterTime) {
+      const adjMonths = adjustMonths(c.months);
+      if (!adjMonths.includes(currentMonth)) return false;
+      if (!isTimeAvailable(c.time)) return false;
+    }
+
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;">
+      <div class="empty-icon">🍂</div>
+      <p style="font-weight:700;color:var(--brown);">No critters found!</p>
+      <p style="font-size:0.85rem;margin-top:4px;">Try adjusting your search or filters.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(c => {
+    const tab = getTabForCritter(c);
+    const key = getKey(tab, c.name);
+    const isCaught = caughtData[key];
+    const adjMonths = adjustMonths(c.months);
+    const cls = isCaught ? 'caught' : '';
+    // Get index within original array for CDN image
+    const sourceArr = tab === 'fish' ? FISH : tab === 'bugs' ? BUGS : SEA_CREATURES;
+    const idx = sourceArr.findIndex(x => x.name === c.name);
+
+    return `<div class="critter-card ${cls}" onclick="openDetail('${c.name.replace(/'/g, "\\'")}','${tab}')">
+      <div class="check-mark" onclick="event.stopPropagation(); quickToggle('${tab}','${c.name.replace(/'/g, "\\'")}')">${isCaught ? '✓' : ''}</div>
+      ${critterImgHTML(tab, idx, c.emoji)}
+      <div class="critter-name">${c.name}</div>
+      <div class="critter-price">${c.price.toLocaleString()}</div>
+      <div class="critter-rarity rarity-${(c.rarity||'Common').toLowerCase().replace('-','')}">${c.rarity || 'Common'}</div>
+      <div class="month-dots">
+        ${[1,2,3,4,5,6,7,8,9,10,11,12].map(m =>
+          `<div class="month-dot ${adjMonths.includes(m) ? 'available' : ''} ${m === currentMonth ? 'current' : ''}"></div>`
+        ).join('')}
+      </div>
+      ${isCaught ? '<div class="status-badges"><span class="badge caught-badge">Caught</span></div>' : ''}
+    </div>`;
+  }).join('');
+
+  updateStats();
+}
+
+function updateStats() {
+  const tabs = [
+    { key: 'fish', data: FISH, icon: '🐟', label: 'Fish' },
+    { key: 'bugs', data: BUGS, icon: '🦋', label: 'Bugs' },
+    { key: 'sea', data: SEA_CREATURES, icon: '🐙', label: 'Sea' }
+  ];
+
+  let totalCaught = 0, totalAll = 0;
+
+  const statsHTML = tabs.map(t => {
+    const caught = t.data.filter(c => caughtData[getKey(t.key, c.name)]).length;
+    totalCaught += caught;
+    totalAll += t.data.length;
+    return `<div class="stat-pill">${t.icon} ${t.label}: <span>${caught}/${t.data.length}</span></div>`;
+  }).join('');
+
+  document.getElementById('statsBar').innerHTML = statsHTML +
+    `<div class="stat-pill">📊 Total: <span>${totalCaught}/${totalAll}</span></div>`;
+
+  // Progress bars
+  const progressHTML = tabs.map(t => {
+    const caught = t.data.filter(c => caughtData[getKey(t.key, c.name)]).length;
+    const cPct = Math.round((caught / t.data.length) * 100);
+    return `<div class="progress-bar-group">
+      <div class="progress-header">
+        <span class="progress-label">${t.icon} ${t.label}</span>
+        <span class="progress-pct">${cPct}%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${cPct}%"></div></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('progressBars').innerHTML = progressHTML;
+}
+
+// ═══════════════════════════════════════════════════
+//  DETAIL POPUP
+// ═══════════════════════════════════════════════════
+
+let _detailTab = null; // track which tab the detail popup is for
+
+function openDetail(name, tab) {
+  const effectiveTab = tab || currentTab;
+  _detailTab = effectiveTab;
+  const sourceArr = effectiveTab === 'fish' ? FISH : effectiveTab === 'bugs' ? BUGS : SEA_CREATURES;
+  const c = sourceArr.find(x => x.name === name);
+  if (!c) return;
+
+  const key = getKey(effectiveTab, c.name);
+  const isCaught = caughtData[key];
+  const adjMonths = adjustMonths(c.months);
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const availStr = adjMonths.sort((a,b) => a-b).map(m => monthNames[m-1]).join(', ');
+
+  const extraFields = effectiveTab === 'sea'
+    ? `<div class="detail-field"><label>Speed</label><p>${c.speed}</p></div>
+       <div class="detail-field"><label>Shadow</label><p>${c.shadow}</p></div>`
+    : `<div class="detail-field"><label>Location</label><p>${c.location}</p></div>
+       <div class="detail-field"><label>Shadow</label><p>${c.shadow || '—'}</p></div>`;
+
+  const idx = sourceArr.indexOf(c);
+
+  document.getElementById('detailCard').innerHTML = `
+    <button class="detail-close" onclick="closeDetail(event, true)">&times;</button>
+    ${critterImgHTML(effectiveTab, idx, c.emoji, 100)}
+    <div class="detail-name">${c.name}</div>
+    <div class="detail-info">
+      <div class="detail-field"><label>Nook Price</label><p>💰 ${c.price.toLocaleString()} Bells</p></div>
+      <div class="detail-field"><label>${effectiveTab === 'bugs' ? 'Flick' : effectiveTab === 'fish' ? 'CJ' : 'Nook'} Price</label><p>💰 ${effectiveTab === 'sea' ? c.price.toLocaleString() : Math.floor(c.price * 1.5).toLocaleString()} Bells</p></div>
+      <div class="detail-field"><label>Rarity</label><p>${c.rarity || 'Common'}</p></div>
+      <div class="detail-field"><label>Time</label><p>${c.time}</p></div>
+      ${extraFields}
+      <div class="detail-field" style="grid-column:1/-1"><label>Months Available</label><p>${availStr}</p></div>
+    </div>
+    <div class="detail-actions">
+      <button class="detail-btn catch-btn ${isCaught ? 'active' : ''}" onclick="toggleCaught('${name.replace(/'/g, "\\'")}')">
+        ${isCaught ? '✓ Caught' : '🎣 Mark Caught'}
+      </button>
+    </div>`;
+
+  document.getElementById('detailOverlay').classList.add('show');
+}
+
+function closeDetail(e, force) {
+  if (force || e.target === document.getElementById('detailOverlay')) {
+    document.getElementById('detailOverlay').classList.remove('show');
+  }
+}
+
+function quickToggle(tab, name) {
+  const key = getKey(tab, name);
+  if (caughtData[key]) {
+    delete caughtData[key];
+  } else {
+    caughtData[key] = true;
+  }
+  save();
+  renderGrid();
+}
+
+function toggleCaught(name) {
+  const tab = _detailTab || currentTab;
+  const key = getKey(tab, name);
+  if (caughtData[key]) {
+    delete caughtData[key];
+  } else {
+    caughtData[key] = true;
+  }
+  save();
+  openDetail(name, tab);
+  renderGrid();
+}
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+
+updateFilterUI();
+renderGrid();
+updateStats();
+</script>
+</body>
+</html>
