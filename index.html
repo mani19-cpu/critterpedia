@@ -1373,7 +1373,7 @@ function openDetail(name, tab) {
     <div class="detail-name">${c.name}</div>
     <div class="detail-info">
       <div class="detail-field"><label>Nook Price</label><p>💰 ${c.price.toLocaleString()} Bells</p></div>
-      <div class="detail-field"><label>${effectiveTab === 'bugs' ? 'Flick' : effectiveTab === 'fish' ? 'CJ' : 'Nook'} Price</label><p>💰 ${effectiveTab === 'sea' ? c.price.toLocaleString() : Math.floor(c.price * 1.5).toLocaleString()} Bells</p></div>
+      ${effectiveTab !== 'sea' ? `<div class="detail-field"><label>${effectiveTab === 'bugs' ? 'Flick' : 'CJ'} Price</label><p>💰 ${Math.floor(c.price * 1.5).toLocaleString()} Bells</p></div>` : ''}
       <div class="detail-field"><label>Rarity</label><p>${c.rarity || 'Common'}</p></div>
       <div class="detail-field"><label>Time</label><p>${c.time}</p></div>
       ${extraFields}
