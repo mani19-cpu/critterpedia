@@ -800,6 +800,7 @@ const FISH = [
   { name:"Carp", price:300, location:"Pond", shadow:"Large", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common", cdnIdx:4 },
   { name:"Koi", price:4000, location:"Pond", shadow:"Large", time:"4PM-9AM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Rare", cdnIdx:5 },
   { name:"Goldfish", price:1300, location:"Pond", shadow:"Tiny", time:"All day", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Common", cdnIdx:6 },
+  { name:"Pop-eyed Goldfish", price:1300, location:"Pond", shadow:"Tiny", time:"9AM-4PM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Uncommon", cdnIdx:7 },
   { name:"Ranchu Goldfish", price:4500, location:"Pond", shadow:"Small", time:"9AM-4PM", months:[1,2,3,4,5,6,7,8,9,10,11,12], rarity:"Rare", cdnIdx:8 },
   { name:"Killifish", price:300, location:"Pond", shadow:"Tiny", time:"All day", months:[4,5,6,7,8], rarity:"Common", cdnIdx:9 },
   { name:"Crawfish", price:200, location:"Pond", shadow:"Small", time:"All day", months:[4,5,6,7,8,9], rarity:"Common", cdnIdx:10 },
@@ -1007,7 +1008,7 @@ const SEA_CREATURES = [
 // CDN image URL helpers
 const FISH_ICON_MAP = {
   "Bitterling":"Bitterling","Pale Chub":"Pale_Chub","Crucian Carp":"Crucian_Carp","Dace":"Dace",
-  "Carp":"Carp","Koi":"Koi","Goldfish":"Goldfish","Ranchu Goldfish":"Ranchu_Goldfish",
+  "Carp":"Carp","Koi":"Koi","Goldfish":"Goldfish","Pop-eyed Goldfish":"Pop-eyed_Goldfish","Ranchu Goldfish":"Ranchu_Goldfish",
   "Killifish":"Killifish","Crawfish":"Crawfish","Soft-Shelled Turtle":"Soft-Shelled_Turtle",
   "Snapping Turtle":"Snapping_Turtle","Tadpole":"Tadpole","Frog":"Frog",
   "Freshwater Goby":"Freshwater_Goby","Loach":"Loach","Catfish":"Catfish",
@@ -1362,6 +1363,8 @@ function openDetail(name, tab) {
   const extraFields = effectiveTab === 'sea'
     ? `<div class="detail-field"><label>Speed</label><p>${c.speed}</p></div>
        <div class="detail-field"><label>Shadow</label><p>${c.shadow}</p></div>`
+    : effectiveTab === 'bugs'
+    ? `<div class="detail-field"><label>Location</label><p>${c.location}</p></div>`
     : `<div class="detail-field"><label>Location</label><p>${c.location}</p></div>
        <div class="detail-field"><label>Shadow</label><p>${c.shadow || '—'}</p></div>`;
 
