@@ -1005,14 +1005,34 @@ const SEA_CREATURES = [
 // ═══════════════════════════════════════════════════
 
 // CDN image URL helpers
-function getCritterImage(tab, index) {
+const SEA_ICON_MAP = {
+  "Seaweed": "Seaweed", "Sea Grapes": "Sea_Grapes", "Sea Cucumber": "Sea_Cucumber",
+  "Sea Pig": "Sea_Pig", "Sea Star": "Sea_Star", "Sea Urchin": "Sea_Urchin",
+  "Slate Pencil Urchin": "Slate_Pencil_Urchin", "Sea Anemone": "Sea_Anemone",
+  "Moon Jellyfish": "Moon_Jellyfish", "Sea Slug": "Sea_Slug", "Pearl Oyster": "Pearl_Oyster",
+  "Mussel": "Mussel", "Oyster": "Oyster", "Scallop": "Scallop", "Whelk": "Whelk",
+  "Turban Shell": "Turban_Shell", "Abalone": "Abalone", "Gigas Giant Clam": "Gigas_Giant_Clam",
+  "Chambered Nautilus": "Chambered_Nautilus", "Octopus": "Octopus",
+  "Umbrella Octopus": "Umbrella_Octopus", "Vampire Squid": "Vampire_Squid",
+  "Firefly Squid": "Firefly_Squid", "Gazami Crab": "Gazami_Crab",
+  "Dungeness Crab": "Dungeness_Crab", "Snow Crab": "Snow_Crab",
+  "Red King Crab": "Red_King_Crab", "Acorn Barnacle": "Acorn_Barnacle",
+  "Spider Crab": "Spider_Crab", "Tiger Prawn": "Tiger_Prawn", "Sweet Shrimp": "Sweet_Shrimp",
+  "Mantis Shrimp": "Mantis_Shrimp", "Spiny Lobster": "Spiny_Lobster", "Lobster": "Lobster",
+  "Giant Isopod": "Giant_Isopod", "Horseshoe Crab": "Horseshoe_Crab",
+  "Sea Pineapple": "Sea_Pineapple", "Spotted Garden Eel": "Spotted_Garden_Eel",
+  "Flatworm": "Flatworm", "Venus' Flower Basket": "Venus_Flower_Basket"
+};
+
+function getCritterImage(tab, index, name) {
   if (tab === 'fish') return `https://acnhcdn.com/latest/MenuIcon/Fish${index}.png`;
   if (tab === 'bugs') return `https://acnhcdn.com/latest/MenuIcon/Ins${index}.png`;
+  if (tab === 'sea' && name && SEA_ICON_MAP[name]) return `sea_icons/${SEA_ICON_MAP[name]}.png`;
   return null;
 }
 
-function critterImgHTML(tab, index, emoji, size) {
-  const url = getCritterImage(tab, index);
+function critterImgHTML(tab, index, emoji, size, name) {
+  const url = getCritterImage(tab, index, name);
   const sz = size || 64;
   if (url) return `<img class="${sz > 64 ? 'detail-img' : 'critter-img'}" src="${url}" alt="" loading="lazy" onerror="this.outerHTML='<span class=\\'critter-emoji\\'>${emoji || '🐾'}</span>'" />`;
   return `<span class="${sz > 64 ? 'detail-emoji' : 'critter-emoji'}">${emoji || '🐾'}</span>`;
@@ -1208,7 +1228,7 @@ function renderGrid() {
 
     return `<div class="critter-card ${cls}" onclick="openDetail('${c.name.replace(/'/g, "\\'")}','${tab}')">
       <div class="check-mark" onclick="event.stopPropagation(); quickToggle('${tab}','${c.name.replace(/'/g, "\\'")}')">${isCaught ? '✓' : ''}</div>
-      ${critterImgHTML(tab, idx, c.emoji)}
+      ${critterImgHTML(tab, idx, c.emoji, 64, c.name)}
       <div class="critter-name">${c.name}</div>
       <div class="critter-price">${c.price.toLocaleString()}</div>
       <div class="critter-rarity rarity-${(c.rarity||'Common').toLowerCase().replace('-','')}">${c.rarity || 'Common'}</div>
@@ -1288,7 +1308,7 @@ function openDetail(name, tab) {
 
   document.getElementById('detailCard').innerHTML = `
     <button class="detail-close" onclick="closeDetail(event, true)">&times;</button>
-    ${critterImgHTML(effectiveTab, idx, c.emoji, 100)}
+    ${critterImgHTML(effectiveTab, idx, c.emoji, 100, c.name)}
     <div class="detail-name">${c.name}</div>
     <div class="detail-info">
       <div class="detail-field"><label>Nook Price</label><p>💰 ${c.price.toLocaleString()} Bells</p></div>
