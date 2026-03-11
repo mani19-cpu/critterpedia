@@ -1005,6 +1005,67 @@ const SEA_CREATURES = [
 // ═══════════════════════════════════════════════════
 
 // CDN image URL helpers
+const FISH_ICON_MAP = {
+  "Bitterling":"Bitterling","Pale Chub":"Pale_Chub","Crucian Carp":"Crucian_Carp","Dace":"Dace",
+  "Carp":"Carp","Koi":"Koi","Goldfish":"Goldfish","Ranchu Goldfish":"Ranchu_Goldfish",
+  "Killifish":"Killifish","Crawfish":"Crawfish","Soft-Shelled Turtle":"Soft-Shelled_Turtle",
+  "Snapping Turtle":"Snapping_Turtle","Tadpole":"Tadpole","Frog":"Frog",
+  "Freshwater Goby":"Freshwater_Goby","Loach":"Loach","Catfish":"Catfish",
+  "Giant Snakehead":"Giant_Snakehead","Bluegill":"Bluegill","Yellow Perch":"Yellow_Perch",
+  "Black Bass":"Black_Bass","Tilapia":"Tilapia","Pike":"Pike","Pond Smelt":"Pond_Smelt",
+  "Sweetfish":"Sweetfish","Cherry Salmon":"Cherry_Salmon","Char":"Char",
+  "Golden Trout":"Golden_Trout","Stringfish":"Stringfish","Salmon":"Salmon",
+  "King Salmon":"King_Salmon","Mitten Crab":"Mitten_Crab","Guppy":"Guppy",
+  "Nibble Fish":"Nibble_Fish","Angelfish":"Angelfish","Betta":"Betta",
+  "Neon Tetra":"Neon_Tetra","Rainbowfish":"Rainbowfish","Piranha":"Piranha",
+  "Arowana":"Arowana","Dorado":"Dorado","Gar":"Gar","Arapaima":"Arapaima",
+  "Saddled Bichir":"Saddled_Bichir","Sturgeon":"Sturgeon","Sea Butterfly":"Sea_Butterfly",
+  "Seahorse":"Seahorse","Clown Fish":"Clown_Fish","Surgeonfish":"Surgeonfish",
+  "Butterfly Fish":"Butterfly_Fish","Napoleonfish":"Napoleonfish",
+  "Zebra Turkeyfish":"Zebra_Turkeyfish","Blowfish":"Blowfish","Puffer Fish":"Puffer_Fish",
+  "Anchovy":"Anchovy","Horse Mackerel":"Horse_Mackerel","Barred Knifejaw":"Barred_Knifejaw",
+  "Sea Bass":"Sea_Bass","Red Snapper":"Red_Snapper","Dab":"Dab",
+  "Olive Flounder":"Olive_Flounder","Squid":"Squid","Moray Eel":"Moray_Eel",
+  "Ribbon Eel":"Ribbon_Eel","Tuna":"Tuna","Blue Marlin":"Blue_Marlin",
+  "Giant Trevally":"Giant_Trevally","Mahi-Mahi":"Mahi-Mahi","Ocean Sunfish":"Ocean_Sunfish",
+  "Ray":"Ray","Saw Shark":"Saw_Shark","Hammerhead Shark":"Hammerhead_Shark",
+  "Great White Shark":"Great_White_Shark","Whale Shark":"Whale_Shark",
+  "Suckerfish":"Suckerfish","Football Fish":"Football_Fish","Oarfish":"Oarfish",
+  "Barreleye":"Barreleye","Coelacanth":"Coelacanth"
+};
+
+const BUG_ICON_MAP = {
+  "Common Butterfly":"Common_Butterfly","Yellow Butterfly":"Yellow_Butterfly",
+  "Tiger Butterfly":"Tiger_Butterfly","Peacock Butterfly":"Peacock_Butterfly",
+  "Common Bluebottle":"Common_Bluebottle","Paper Kite Butterfly":"Paper_Kite_Butterfly",
+  "Great Purple Emperor":"Great_Purple_Emperor","Monarch Butterfly":"Monarch_Butterfly",
+  "Emperor Butterfly":"Emperor_Butterfly","Agrias Butterfly":"Agrias_Butterfly",
+  "Rajah Brooke's Birdwing":"Rajah_Brookes_Birdwing","Queen Alexandra's Birdwing":"Queen_Alexandras_Birdwing",
+  "Moth":"Moth","Atlas Moth":"Atlas_Moth","Madagascan Sunset Moth":"Madagascan_Sunset_Moth",
+  "Long Locust":"Long_Locust","Migratory Locust":"Migratory_Locust",
+  "Rice Grasshopper":"Rice_Grasshopper","Grasshopper":"Grasshopper","Cricket":"Cricket",
+  "Bell Cricket":"Bell_Cricket","Mantis":"Mantis","Orchid Mantis":"Orchid_Mantis",
+  "Honeybee":"Honeybee","Wasp":"Wasp","Brown Cicada":"Brown_Cicada",
+  "Robust Cicada":"Robust_Cicada","Giant Cicada":"Giant_Cicada","Walker Cicada":"Walker_Cicada",
+  "Evening Cicada":"Evening_Cicada","Cicada Shell":"Cicada_Shell","Red Dragonfly":"Red_Dragonfly",
+  "Darner Dragonfly":"Darner_Dragonfly","Banded Dragonfly":"Banded_Dragonfly",
+  "Damselfly":"Damselfly","Firefly":"Firefly","Mole Cricket":"Mole_Cricket",
+  "Pondskater":"Pondskater","Diving Beetle":"Diving_Beetle","Giant Water Bug":"Giant_Water_Bug",
+  "Stinkbug":"Stinkbug","Man-Faced Stink Bug":"Man-Faced_Stink_Bug","Ladybug":"Ladybug",
+  "Tiger Beetle":"Tiger_Beetle","Jewel Beetle":"Jewel_Beetle","Violin Beetle":"Violin_Beetle",
+  "Citrus Long-Horned Beetle":"Citrus_Long-Horned_Beetle","Rosalia Batesi Beetle":"Rosalia_Batesi_Beetle",
+  "Blue Weevil Beetle":"Blue_Weevil_Beetle","Dung Beetle":"Dung_Beetle",
+  "Earth-Boring Dung Beetle":"Earth-Boring_Dung_Beetle","Scarab Beetle":"Scarab_Beetle",
+  "Drone Beetle":"Drone_Beetle","Goliath Beetle":"Goliath_Beetle","Saw Stag":"Saw_Stag",
+  "Miyama Stag":"Miyama_Stag","Giant Stag":"Giant_Stag","Rainbow Stag":"Rainbow_Stag",
+  "Cyclommatus Stag":"Cyclommatus_Stag","Golden Stag":"Golden_Stag","Giraffe Stag":"Giraffe_Stag",
+  "Horned Dynastid":"Horned_Dynastid","Horned Atlas":"Horned_Atlas","Horned Elephant":"Horned_Elephant",
+  "Horned Hercules":"Horned_Hercules","Walking Stick":"Walking_Stick","Walking Leaf":"Walking_Leaf",
+  "Bagworm":"Bagworm","Ant":"Ant","Hermit Crab":"Hermit_Crab","Wharf Roach":"Wharf_Roach",
+  "Fly":"Fly","Mosquito":"Mosquito","Flea":"Flea","Snail":"Snail","Pill Bug":"Pill_Bug",
+  "Centipede":"Centipede","Spider":"Spider","Tarantula":"Tarantula","Scorpion":"Scorpion"
+};
+
 const SEA_ICON_MAP = {
   "Seaweed": "Seaweed", "Sea Grapes": "Sea_Grapes", "Sea Cucumber": "Sea_Cucumber",
   "Sea Pig": "Sea_Pig", "Sea Star": "Sea_Star", "Sea Urchin": "Sea_Urchin",
@@ -1025,8 +1086,8 @@ const SEA_ICON_MAP = {
 };
 
 function getCritterImage(tab, index, name) {
-  if (tab === 'fish') return `https://acnhcdn.com/latest/MenuIcon/Fish${index}.png`;
-  if (tab === 'bugs') return `https://acnhcdn.com/latest/MenuIcon/Ins${index}.png`;
+  if (tab === 'fish' && name && FISH_ICON_MAP[name]) return `fish_icons/${FISH_ICON_MAP[name]}.png`;
+  if (tab === 'bugs' && name && BUG_ICON_MAP[name]) return `bug_icons/${BUG_ICON_MAP[name]}.png`;
   if (tab === 'sea' && name && SEA_ICON_MAP[name]) return `sea_icons/${SEA_ICON_MAP[name]}.png`;
   return null;
 }
